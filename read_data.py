@@ -11,12 +11,11 @@ import keras
 from tqdm import tqdm
 import glob
 import random
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 splits = ['a', 'b', 'c', 'view', 'illum']
 tps = ['ref','e1','e2','e3','e4','e5','h1','h2','h3','h4','h5',\
        't1','t2','t3','t4','t5']
-
-
 
 
 class DenoiseHPatches(keras.utils.Sequence):
@@ -159,6 +158,8 @@ class HPatches():
         return patches
 
     def read_image_file(self, data_dir, train = 1):
+        aug = ImageDataGenerator()
+
         """Return a Tensor containing the patches
         """
         if self.denoise_model and not self.use_clean:
@@ -191,6 +192,13 @@ class HPatches():
                     patch = image[i * (w): (i + 1) * (w), 0:w]
                     patch = cv2.resize(patch, (32, 32))
                     patch = np.array(patch, dtype=np.uint8)
+
+                    aug.apply_transform(patch, featurewise_center=True,
+                                        featurewise_std_normalization=True,
+                                        rotation_range=20,
+                                        width_shift_range=0.2,
+                                        height_shift_range=0.2,
+                                        horizontal_flip=True)
                     patches.append(patch)
                     labels.append(i + counter)
             counter += n_patches
