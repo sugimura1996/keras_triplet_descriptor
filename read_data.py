@@ -201,7 +201,7 @@ class HPatches():
                     patches.append(patch)
                     labels.append(i + counter)
                     for j in range(5):
-                        params = self.imgaug.get_random_trandom(patch.shape)
+                        params = self.imgaug.get_random_transform(patch.shape)
                         patch_aug = self.imgaug.apply_transform(self.imgaug.standardize(patch), params)
                         patches.append(patch_aug)
                         labels.append(i + counter)
